@@ -1,0 +1,9 @@
+*.swp
+Makefile
+Makefile.old
+MYMETA.json
+MYMETA.yml
+blib
+MANIFEST.bak
+pm_to_blib
+Geo-OSM-DBI-*.tar.gz

@@ -1,0 +1,8 @@
+Changes
+ignore.txt
+lib/Geo/OSM/DBI.pm
+lib/Geo/OSM/DBI/CH.pm
+Makefile.PL
+MANIFEST
+README
+README.md

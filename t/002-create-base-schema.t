@@ -1,3 +1,9 @@
+#!/usr/bin/perl
+#
+#  See inkscape created file t/002-data.svg for what's being
+#  loaded with this script.
+#
+
 use strict;
 use warnings;
 

@@ -11,5 +11,6 @@ README
 README.md
 t/001-load.t
 t/002-create-base-schema.t
+t/002-data.svg
 t/002-fill-base-schema.sql
 test/01-create-object.t

@@ -1,8 +1,15 @@
 Changes
-ignore.txt
 lib/Geo/OSM/DBI.pm
 lib/Geo/OSM/DBI/CH.pm
+Makefile
 Makefile.PL
 MANIFEST
+MANIFEST.SKIP
+MYMETA.json
+MYMETA.yml
 README
 README.md
+t/001-load.t
+t/002-create-base-schema.t
+t/002-fill-base-schema.sql
+test/01-create-object.t

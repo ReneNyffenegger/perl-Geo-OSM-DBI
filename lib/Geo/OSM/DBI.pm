@@ -58,6 +58,90 @@ It's unclear to me what a C<DBI::db> object actually is...
   return $self;
 
 } #_}
+sub create_base_schema_tables { #_{
+#_{ POD
+
+=head2 create_base_schema_tables
+
+    $osm_db->create_base_schema_tables();
+
+Create the base tables C<nod>, C<nod_way>, C<rel_mem> and C<tag>.
+
+After creating the schema, the tables should be filled with C<pbf2sqlite.v2.py>.
+
+After filling the tables, the indexes on the tables should be created with L</create_base_schema_indexes>.
+
+
+=cut
+
+#_}
+  
+  my $self = shift;
+
+  $self->{dbh}->do("
+    create table nod (
+          id  integer primary key,
+          lat real not null,
+          lon real not null
+    )");
+
+  $self->{dbh}->do("
+        create table nod_way (
+          way_id         integer not null,
+          nod_id         integer not null,
+          order_         integer not null
+    )");
+
+  $self->{dbh}->do("
+        create table rel_mem (
+          rel_of         integer not null,
+          order_         integer not null,
+          way_id         integer,
+          nod_id         integer,
+          rel_id         integer,
+          rol            text
+    )");
+
+  $self->{dbh}->do("
+        create table tag(
+          nod_id      integer null,
+          way_id      integer null,
+          rel_id      integer null,
+          key         text not null,
+          val         text not null
+   )");
+
+} #_}
+sub create_base_schema_indexes { #_{
+#_{ POD
+
+=head2 create_base_schema_indexes()
+
+    $osm_db->create_base_schema_tables();
+
+    # fill tables (as of yet with pbf2sqlite.v2.py
+
+    $osm_db->create_base_schema_indexes();
+
+Create the base tables C<nod>, C<nod_way>, C<rel_mem> and C<tag>.
+
+After creating the base schema and filling the tables, the indexes should be created on the base schema tables.
+
+=cut
+
+  my $self = shift;
+
+  $self->{dbh}->do('create index nod_way_ix_way_id on nod_way (way_id)'   );
+
+  $self->{dbh}->do('create index tag_ix_val        on tag     (     val)' );
+  $self->{dbh}->do('create index tag_ix_key_val    on tag     (key, val)' );
+
+  $self->{dbh}->do('create index tag_ix_nod_id     on tag     (nod_id)'   );
+  $self->{dbh}->do('create index tag_ix_way_id     on tag     (way_id)'   );
+  $self->{dbh}->do('create index tag_ix_rel_id     on tag     (rel_id)'   );
+
+#_}
+} #_}
 
 #_}
 #_{ POD: Copyright

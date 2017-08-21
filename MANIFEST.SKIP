@@ -1,0 +1,6 @@
+\.git
+\.swp$
+\.bak$
+Geo-OSM-DBI-.*\.tar\.gz
+test.db
+blib

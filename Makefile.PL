@@ -8,7 +8,7 @@ WriteMakefile(
     NAME             => 'Geo::OSM::DBI',
     AUTHOR           => q{René Nyffenegger <rene.nyffenegger@adp-gmbh.ch>},
     VERSION_FROM     => 'lib/Geo/OSM/DBI.pm',
-    ABSTRACT_FROM    => 'lib/Geo/OSM/DBI.pm',
+#   ABSTRACT_FROM    => 'lib/Geo/OSM/DBI.pm',
     LICENSE          => 'artistic_2',
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.006,
@@ -21,6 +21,7 @@ WriteMakefile(
     },
     BUILD_REQUIRES => {
         'Test::Simple' => 0,
+        'Test::More'   => 0,
         'DBI'          => 0,
         'DBD::SQLite'  => 0,
     },

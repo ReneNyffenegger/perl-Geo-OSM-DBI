@@ -11,10 +11,8 @@ sub exec_sql_stmts_in_file {
     chomp $stmt;
     $stmt =~ s/--.*//;
     next unless $stmt =~ /\S/;
-    print "$stmt\n";
     $dbh->do($stmt) or die "Could not execute $stmt";
   }
-  
   
   close $sql;
 }

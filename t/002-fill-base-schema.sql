@@ -103,7 +103,7 @@ insert into nod_way values (  9, 90, 1);
 insert into nod_way values (  9, 60, 2);
 
  -- }
- -- { nod_rel
+ -- { rel_mem (was: nod_rel)
 
 -- insert into nod_rel values ( 50, 19, null);
    insert into rel_mem(rel_of, order_, nod_id, rol) values (19, 0,  50, "Rel 19: node" );

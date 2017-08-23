@@ -98,7 +98,7 @@ After filling the tables, the indexes on the tables should be created with L</cr
           lat real not null,
           lon real not null
     )",
-    "create table ${schema_dot}not"
+    "create table ${schema_dot}nod"
   );
 
 
@@ -113,8 +113,8 @@ After filling the tables, the indexes on the tables should be created with L</cr
         create table ${schema_dot}rel_mem (
           rel_of         integer not null,
           order_         integer not null,
-          way_id         integer,
           nod_id         integer,
+          way_id         integer,
           rel_id         integer,
           rol            text
     )");
@@ -169,7 +169,6 @@ After creating the base schema and filling the tables, the indexes should be cre
 #_}
 } #_}
 #_}
-
 sub create_area_tables { #_{
 #_{ POD
 
@@ -244,7 +243,16 @@ sub create_area_tables { #_{
       where
         nod_id in (select              id from ${schema_name_to_dot}nod    ) or
         way_id in (select distinct way_id from ${schema_name_to_dot}nod_way) or
-        rel_id in (select distinct rel_id from ${schema_name_to_dot}rel_mem)
+        rel_id in (select distinct rel_id 
+                    from rel_mem where
+        nod_id in (select              id from ${schema_name_to_dot}nod    ) or
+        way_id in (select distinct way_id from ${schema_name_to_dot}nod_way)
+        )                                                                    or
+        rel_id in (select distinct rel_of 
+                    from rel_mem where
+        nod_id in (select              id from ${schema_name_to_dot}nod    ) or
+        way_id in (select distinct way_id from ${schema_name_to_dot}nod_way)
+        )
      ");
 
     $self->_sql_stmt($stmt, "${schema_name_to_dot}.nod_rel filled");
@@ -259,6 +267,7 @@ sub create_area_tables { #_{
       where 
         nod_id in (select              id from ${schema_name_to_dot}nod    ) or
         way_id in (select distinct way_id from ${schema_name_to_dot}nod_way) or
+        rel_id in (select distinct rel_of from ${schema_name_to_dot}rel_mem) or
         rel_id in (select distinct rel_id from ${schema_name_to_dot}rel_mem)
      ");
 

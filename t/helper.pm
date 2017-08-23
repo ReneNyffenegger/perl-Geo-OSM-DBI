@@ -1,6 +1,6 @@
 package t::helper;
 
-sub exec_sql_stmts_in_file {
+sub exec_sql_stmts_in_file { #_{
 
   my $dbh      = shift;
   my $filename = shift;
@@ -15,6 +15,6 @@ sub exec_sql_stmts_in_file {
   }
   
   close $sql;
-}
+} #_}
 
 1;

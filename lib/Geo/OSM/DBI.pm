@@ -102,14 +102,17 @@ After filling the tables, the indexes on the tables should be created with L</cr
   );
 
 
-  $self->{dbh}->do("
+# $self->{dbh}->do("
+  $self->_sql_stmt("
         create table ${schema_dot}nod_way (
           way_id         integer not null,
           nod_id         integer not null,
           order_         integer not null
-    )");
+    )",
+  "create table ${schema_dot}nod_way");
 
-  $self->{dbh}->do("
+# $self->{dbh}->do("
+  $self->_sql_stmt("
         create table ${schema_dot}rel_mem (
           rel_of         integer not null,
           order_         integer not null,
@@ -117,16 +120,19 @@ After filling the tables, the indexes on the tables should be created with L</cr
           way_id         integer,
           rel_id         integer,
           rol            text
-    )");
+    )",
+  "create table ${schema_dot}rel_mem");
 
-  $self->{dbh}->do("
+# $self->{dbh}->do("
+  $self->_sql_stmt("
         create table ${schema_dot}tag(
           nod_id      integer null,
           way_id      integer null,
           rel_id      integer null,
           key         text not null,
           val         text not null
-   )");
+   )",
+ "create table ${schema_dot}tag");
 
 } #_}
 sub create_base_schema_indexes { #_{
@@ -157,18 +163,109 @@ After creating the base schema and filling the tables, the indexes should be cre
 # TODO: to put the schema in front of the index name rather than the table name seems
 #       to be very sqlite'ish.
 #
-  $self->{dbh}->do("create index ${schema_dot}nod_way_ix_way_id on nod_way (way_id)"   );
+  $self->_sql_stmt("create index ${schema_dot}nod_way_ix_way_id on nod_way (way_id)"   , "index ${schema_dot}nod_way_ix_way_id");
+                                                                                                                               
+  $self->_sql_stmt("create index ${schema_dot}tag_ix_val        on tag     (     val)" , "index ${schema_dot}tag_ix_val"       );
+  $self->_sql_stmt("create index ${schema_dot}tag_ix_key_val    on tag     (key, val)" , "index ${schema_dot}tag_ix_key_val"   );
+                                                                                                                               
+  $self->_sql_stmt("create index ${schema_dot}tag_ix_nod_id     on tag     (nod_id)"   , "index ${schema_dot}tag_ix_nod_id"    );
+  $self->_sql_stmt("create index ${schema_dot}tag_ix_way_id     on tag     (way_id)"   , "index ${schema_dot}tag_ix_way_id"    );
+  $self->_sql_stmt("create index ${schema_dot}tag_ix_rel_id     on tag     (rel_id)"   , "index ${schema_dot}tag_ix_rel_id"    );
 
-  $self->{dbh}->do("create index ${schema_dot}tag_ix_val        on tag     (     val)" );
-  $self->{dbh}->do("create index ${schema_dot}tag_ix_key_val    on tag     (key, val)" );
-
-  $self->{dbh}->do("create index ${schema_dot}tag_ix_nod_id     on tag     (nod_id)"   );
-  $self->{dbh}->do("create index ${schema_dot}tag_ix_way_id     on tag     (way_id)"   );
-  $self->{dbh}->do("create index ${schema_dot}tag_ix_rel_id     on tag     (rel_id)"   );
+# 2017-08-28
+# $self->{dbh}->do("create index ${schema_dot}rel_mem_ix_nod_id on rel_mem (nod_id)"   );
+  $self->_sql_stmt("create index ${schema_dot}rel_mem_ix_rel_of on rel_mem (rel_of)"   , "index ${schema_dot}rel_mem_ix_rel_of");
 
 #_}
 } #_}
 #_}
+sub create_table_municipalities { #_{
+#_{ POD
+
+=head2 create_table_municipalities
+
+    $osm->create_table_municipalities();
+
+Creates the table C<municipalites>.
+
+=cut
+
+#_}
+
+  my $self = shift;
+
+  $self -> _sql_stmt("
+    create table municipalities (
+      rel_id                   integer primary key,
+      name                     text    not null,
+      min_lat                  real    not null,
+      min_lon                  real    not null,
+      max_lat                  real    not null,
+      max_lon                  real    not null,
+      cnt_ways                 integer not null,
+      cnt_nodes                integer not null,
+      cnt_nodes_verification   integer not null
+    )",
+    "create table municipalities"
+  );
+
+  $self -> _sql_stmt("
+    insert into municipalities
+    select
+       admi.rel_id rel_id,
+       name.val    name,
+       min  (node.lat            )   min_lat,
+       min  (node.lon            )   min_lon,
+       max  (node.lat            )   max_lat,
+       max  (node.lon            )   max_lon,
+       count(distinct relm.way_id)   cnt_ways,
+       count(distinct node.id    )   cnt_nodes,
+    /* cnt_nodes_verification: 
+          Must/should be 0 because each way counts one node that another way already counted.
+          Borders that are not 100 % in the database return -1 or so.
+    */
+       count(*                   ) -
+       count(distinct relm.way_id) -
+       count(distinct node.id    )   cnt_nodes_verification
+    from
+      tag     admi                                   join
+      tag     name on admi.rel_id = name.rel_id      join
+      rel_mem relm on admi.rel_id = relm.rel_of      join
+      nod_way nodw on relm.way_id = nodw.way_id      join
+      nod     node on nodw.nod_id = node.id
+    where
+      admi.key = 'admin_level' and
+      admi.val =  8            and
+      name.key = 'name'
+    group by
+      admi.rel_id,
+      name.val
+     order by
+    --   relm.way_id,
+    --   node.id
+      cnt_nodes_verification,
+      name
+  ", "fill table municipalities");
+
+#   $self -> _sql_stmt("
+#     create table municipalities as
+#     select
+#       muni.rel_id rel_id,
+#       name.val    name,
+#       borw.id
+#     from
+#       tag     muni                                   join
+#       tag     name on muni.rel_id = name.rel_id      join
+#       rel_mem borr on muni.rel_id = borr.rel_of      join
+#       way     borw on borr.way_id = borw.id
+#     where
+#       muni.key = 'admin_level' and
+#       name.key = 'name'        and
+#       muni.val =  8
+#    ",
+#    'create table municipalites');
+
+} #_}
 sub create_area_tables { #_{
 #_{ POD
 

@@ -65,15 +65,86 @@ It's unclear to me what a C<DBI::db> object actually is...
   return $self;
 
 } #_}
-sub gemeinden { #_{
+sub create_table_municipalities_ch { #_{
 #_{ POD
 
-=head2 municipalities
+=head2 create_table_municipalities_ch
 
-    my @gemeinden = $osm_db_ch->gemeinden();
+    $osm_db_ch->create_table_municipalities_ch();
 
 
-Return a list of municipalites (admin level = 8).
+First creates the table C<municipalities> by calling the
+L<< parent's class|Geo::OSM::DBI >> L<< create_table_municipalities|Geo::OSM::DBI/create_table_municipalities >>.
+Then, it uses the data in table C<municipalities> to create C<municipalities_ch>.
+Finanlly, it creates the view C<municipalities_ch_v>.
+
+=cut
+
+#_}
+  
+  my $self = shift;
+
+  # Call method in parent class:
+  $self->create_table_municipalities();
+
+  $self -> _sql_stmt("
+  create table municipalities_ch (
+     rel_id integer primary key,
+     bfs_no integer not null
+  )",
+  "create table municipalities_ch");
+  
+  $self -> _sql_stmt("
+    insert into municipalities_ch
+    select
+      mun.rel_id        rel_id,
+      bfs.val           bfs_no
+    from
+      municipalities    mun  join
+      tag               bfs  on mun.rel_id = bfs.rel_id
+    where
+      bfs.key = 'swisstopo:BFS_NUMMER'
+  ", "fill table municipalities_ch");
+
+
+  $self -> _sql_stmt("
+    create view municipalities_ch_v as
+    select
+      rel_id,
+      name,
+      min_lat,
+      min_lon,
+      max_lat,
+      max_lon,
+      bfs_no
+    from
+      municipalities_ch join
+      municipalities    using (rel_id)
+  ",
+  "create view municipalities_ch_v"
+ );
+
+ 
+#   my $sth = $self->{dbh}->prepare($stmt);
+#   $sth->execute;
+# 
+#   my @ret;
+#   while (my $r = $sth->fetchrow_hashref) {
+#     push @ret, $r;
+#   }
+# 
+#   return @ret;
+
+} #_}
+sub municipalities_ch { #_{
+#_{ POD
+
+=head2 municipalities_ch
+
+    $osm_db_ch->create_table_municipalities_ch();
+    …
+    my %municipalities = $osm_db_ch->municipalities_ch();
+
 
 =cut
 
@@ -82,33 +153,35 @@ Return a list of municipalites (admin level = 8).
   my $self = shift;
   
   my $stmt = "
-select
-  gemeinde.rel_id  rel_id,
-  name.val         name,
-  bfs_nummer.val   bfs_no
-from
-  tag gemeinde                                          join
---tag boundary   on gemeinde.rel_id = boundary  .rel_id join
-  tag name       on gemeinde.rel_id = name      .rel_id join
-  tag bfs_nummer on gemeinde.rel_id = bfs_nummer.rel_id  
-where
-  gemeinde  .key = 'admin_level' and
-  gemeinde  .val =  8            and
-  name      .key = 'name'        and
-  bfs_nummer.key = 'swisstopo:BFS_NUMMER'
-order by
-  name.val";
+    select
+      rel_id,
+      name,
+      min_lat,
+      max_lat,
+      min_lon,
+      max_lon,
+      bfs_no
+    from
+      municipalities_ch_v
+  ";
 
 
   my $sth = $self->{dbh}->prepare($stmt);
   $sth->execute;
 
-  my @ret;
+  my %ret;
   while (my $r = $sth->fetchrow_hashref) {
-    push @ret, $r;
+    $ret{$r->{rel_id}} = {
+      name    => $r->{name   },
+      min_lat => $r->{min_lat},
+      max_lat => $r->{max_lat},
+      min_lon => $r->{min_lon},
+      max_lon => $r->{max_lon},
+      bfs_no  => $r->{bfs_no },
+    };
   }
 
-  return @ret;
+  return %ret;
 
 } #_}
 
@@ -134,4 +207,3 @@ The source code is on L<< github|https://github.com/ReneNyffenegger/perl-Geo-OSM
 #_}
 
 'tq84';
-

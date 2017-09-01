@@ -112,10 +112,10 @@ Finanlly, it creates the view C<municipalities_ch_v>.
     select
       rel_id,
       name,
-      min_lat,
-      min_lon,
-      max_lat,
-      max_lon,
+      lat_min,
+      lon_min,
+      lat_max,
+      lon_max,
       bfs_no
     from
       municipalities_ch join
@@ -156,10 +156,10 @@ sub municipalities_ch { #_{
     select
       rel_id,
       name,
-      min_lat,
-      max_lat,
-      min_lon,
-      max_lon,
+      lat_min,
+      lat_max,
+      lon_min,
+      lon_max,
       bfs_no
     from
       municipalities_ch_v
@@ -173,10 +173,10 @@ sub municipalities_ch { #_{
   while (my $r = $sth->fetchrow_hashref) {
     $ret{$r->{rel_id}} = {
       name    => $r->{name   },
-      min_lat => $r->{min_lat},
-      max_lat => $r->{max_lat},
-      min_lon => $r->{min_lon},
-      max_lon => $r->{max_lon},
+      lat_min => $r->{lat_min},
+      lat_max => $r->{lat_max},
+      lon_min => $r->{lon_min},
+      lon_max => $r->{lon_max},
       bfs_no  => $r->{bfs_no },
     };
   }

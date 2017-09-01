@@ -198,10 +198,10 @@ Creates the table C<municipalites>.
     create table municipalities (
       rel_id                   integer primary key,
       name                     text    not null,
-      min_lat                  real    not null,
-      min_lon                  real    not null,
-      max_lat                  real    not null,
-      max_lon                  real    not null,
+      lat_min                  real    not null,
+      lon_min                  real    not null,
+      lat_max                  real    not null,
+      lon_max                  real    not null,
       cnt_ways                 integer not null,
       cnt_nodes                integer not null,
       cnt_nodes_verification   integer not null
@@ -214,10 +214,10 @@ Creates the table C<municipalites>.
     select
        admi.rel_id rel_id,
        name.val    name,
-       min  (node.lat            )   min_lat,
-       min  (node.lon            )   min_lon,
-       max  (node.lat            )   max_lat,
-       max  (node.lon            )   max_lon,
+       min  (node.lat            )   lat_min,
+       min  (node.lon            )   lon_min,
+       max  (node.lat            )   lat_max,
+       max  (node.lon            )   lon_max,
        count(distinct relm.way_id)   cnt_ways,
        count(distinct node.id    )   cnt_nodes,
     /* cnt_nodes_verification: 
@@ -301,10 +301,18 @@ sub create_area_tables { #_{
      $lon_min = $coords->{lon_min};
      $lon_max = $coords->{lon_max};
   }
+# elsif (my $municipality_rel_id = delete $opts->{municipality_rel_id}) {
+#   my $sth = $dbh->prepare ('select 
+
+# }
 
   my ($schema_name_to, $schema_name_to_dot) = _schema_dot_from_opts($opts, 'schema_name_to');
   croak "Must have a destination schema name" unless $schema_name_to;
 
+  croak "lat_min not defined" unless defined $lat_min;
+  croak "lat_max not defined" unless defined $lat_max;
+  croak "lon_min not defined" unless defined $lon_min;
+  croak "lon_max not defined" unless defined $lon_max;
 
   $self->create_base_schema_tables({schema=>$schema_name_to});
 

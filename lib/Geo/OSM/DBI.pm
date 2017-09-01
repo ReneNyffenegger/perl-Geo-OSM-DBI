@@ -281,6 +281,10 @@ sub create_area_tables { #_{
       schema_name_to   => 'area'
     });
 
+    $osm_db->create_area_tables(
+      municipality_rel_id =>  $rel_id,
+      schema_name_to      => 'area'
+    });
 
 =cut
 
@@ -301,10 +305,17 @@ sub create_area_tables { #_{
      $lon_min = $coords->{lon_min};
      $lon_max = $coords->{lon_max};
   }
-# elsif (my $municipality_rel_id = delete $opts->{municipality_rel_id}) {
-#   my $sth = $dbh->prepare ('select 
+  elsif (my $municipality_rel_id = delete $opts->{municipality_rel_id}) {
+    my $sth = $self->{dbh}->prepare ('select lat_min, lat_max, lon_min, lon_max from municipalities where rel_id = ?');
+    $sth->execute($municipality_rel_id);
+    my $r = $sth->fetchrow_hashref or croak "No record found for municipality_rel_id $municipality_rel_id";
 
-# }
+    $lat_min = $r->{lat_min};
+    $lat_max = $r->{lat_max};
+    $lon_min = $r->{lon_min};
+    $lon_max = $r->{lon_max};
+
+  }
 
   my ($schema_name_to, $schema_name_to_dot) = _schema_dot_from_opts($opts, 'schema_name_to');
   croak "Must have a destination schema name" unless $schema_name_to;

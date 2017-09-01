@@ -27,8 +27,15 @@ $dbh->{AutoCommit} = 0;
 
 my $osm_db = Geo::OSM::DBI->new($dbh);
 
-$osm_db -> create_area_tables(47, 48, 7, 9,
-    {schema_name_to => $area_schema});
+$osm_db -> create_area_tables(# 47, 48, 7, 9,
+    { coords=>{
+        lat_min => 47,
+        lat_max => 48,
+        lon_min =>  7,
+        lon_max =>  9
+      },
+      schema_name_to => $area_schema,
+    });
 
 $dbh->commit;
 

@@ -271,8 +271,13 @@ sub create_area_tables { #_{
 
 =head2 new
 
-    $osm_db->create_area_tables($lat_min, $lat_max, $lon_min, $lon_max, {
-      schema_name_from => 'main',
+    $osm_db->create_area_tables(
+      coords           => {
+        lat_min => 47,
+        lat_max => 48,
+        lon_min =>  7,
+        lon_max =>  9
+      },
       schema_name_to   => 'area'
     });
 
@@ -282,11 +287,20 @@ sub create_area_tables { #_{
 #_}
 
   my $self    = shift;
-  my $lat_min = shift;
-  my $lat_max = shift;
-  my $lon_min = shift;
-  my $lon_max = shift;
   my $opts    = shift;
+
+  my $lat_min;
+  my $lat_max;
+  my $lon_min;
+  my $lon_max;
+
+  if (my $coords = delete $opts->{coords}) {
+
+     $lat_min = $coords->{lat_min};
+     $lat_max = $coords->{lat_max};
+     $lon_min = $coords->{lon_min};
+     $lon_max = $coords->{lon_max};
+  }
 
   my ($schema_name_to, $schema_name_to_dot) = _schema_dot_from_opts($opts, 'schema_name_to');
   croak "Must have a destination schema name" unless $schema_name_to;

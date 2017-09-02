@@ -1,4 +1,4 @@
-# Encoding and name
+# Encoding and name #_{
 
 =encoding utf8
 =head1 NAME
@@ -6,9 +6,9 @@
 Geo::OSM::DBI - Store Open Street Map data with DBI.
 
 =cut
-#
 package Geo::OSM::DBI;
-
+#_}
+#_{ use …
 use warnings;
 use strict;
 
@@ -19,12 +19,40 @@ use utf8;
 
 use Carp;
 
+#_}
 our $VERSION = 0.01;
 #_{ Synopsis
 
 =head1 SYNOPSIS
+
+    use DBI;
     use Geo::OSM::DBI;
+
+    # Create a DBI connection to a database ...
+    my $dbh = DBI->connect("dbi:SQLite:dbname=…", '', '', {sqlite_unicode=>1}) or die;
+
+    # ... and use the DBI connection to construct an OSM DB:
+    my $osm_db = Geo::OSM::DBI->new{$dbh};
+
+    $osm_db->create_base_schema_tables(…);
+
+    # TODO: load schemas with Open Street Map data...
+    
+    $osm_db->create_base_schema_indexes();
+
 =cut
+#_}
+#_{ Overview
+
+=head1 OVERVIEW
+
+Manage <I>OpenStreetMap</I> data in a L<DBI> database.
+
+Originally, the package was thought to be database product agnostic (does the I<I> in C<DBI> not stand for independent?). It turned out, that I was
+happy if I could make it work with L<DBD::SQLite>, so to call it DB-independent is not correct.
+
+=cut
+
 #_}
 #_{ Methods
 

@@ -2,9 +2,9 @@
 
 =encoding utf8
 =head1 NAME
-Geo::OSM::DBI
 
-Store Open Street Map data with DBI.
+Geo::OSM::DBI - Store Open Street Map data with DBI.
+
 =cut
 #
 package Geo::OSM::DBI;

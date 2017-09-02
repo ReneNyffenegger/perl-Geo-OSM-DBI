@@ -26,5 +26,5 @@ WriteMakefile(
         'DBD::SQLite'  => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'Geo-OSM-SQLite-*' },
+    clean => { FILES => 'Geo-OSM-DBI-*' },
 );

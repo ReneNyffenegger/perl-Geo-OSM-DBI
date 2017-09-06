@@ -74,7 +74,7 @@ sub name { #_{
 
 =head2 name
 
-    my $name = $rel->name;
+    my $name = $rel->name();
 
 Returns the name of the object;
 
@@ -86,6 +86,31 @@ Returns the name of the object;
 
   my $sth = $self->{osm_dbi}->_sth_prepare_name('rel');
   $sth->execute($self->{id}) or die;
+
+  my ($name) = $sth->fetchrow_array;
+
+  return $name;
+
+} #_}
+sub name_in_lang { #_{
+#_{ POD
+
+=head2 name_in_lang
+
+    my $lang = 'de'; # or 'en' or 'fr' or 'it' or …
+    my $name = $rel->name_in_lang($lang);
+
+Returns the name of the object in the language C<$lang>.
+
+=cut
+
+#_}
+
+  my $self = shift;
+  my $lang = shift;
+
+  my $sth = $self->{osm_dbi}->_sth_prepare_name_in_lang('rel');
+  $sth->execute($self->{id}, "name:$lang") or die;
 
   my ($name) = $sth->fetchrow_array;
 

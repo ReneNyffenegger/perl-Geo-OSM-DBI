@@ -495,7 +495,11 @@ sub _sth_prepare_name { #_{
 
 =head2 _sth_prepare_name
 
-    my sth = $osm_dbi->_sth_prepare_name($primitive_type); 
+    my $primitive_type = 'rel'; # or 'way'. or 'node';
+
+    my sth = $osm_dbi->_sth_prepare_name(); 
+
+    $sth->execute($primitive_id);
 
 Prepares the statement handle to get the name for a primitive. C<$primitive_type> must be C<node>, C<way> or C<relation>.
 
@@ -509,6 +513,35 @@ Prepares the statement handle to get the name for a primitive. C<$primitive_type
   croak "Unsupported primitive type $primitive_type" unless grep { $_ eq $primitive_type} qw(rel nod way);
 
   my $sth = $self->{dbh}->prepare("select val as name from tag where ${primitive_type}_id = ? and key = 'name'") or croak;
+
+  return $sth;
+
+} #_}
+sub _sth_prepare_name_in_lang { #_{
+#_{ POD
+
+=head2 _sth_prepare_name_in_lang
+
+    my $primitive_type = 'rel'; # or 'way'. or 'node';
+
+    my sth = $osm_dbi->_sth_prepare_name_in_lang($primitive_type); 
+
+    my $lang           = 'de';  # or 'it' or 'en' or 'fr' or …
+
+    $sth->execute($primitive_id, "lang:$lang");
+
+Prepares the statement handle to get the name for a primitive. C<$primitive_type> must be C<node>, C<way> or C<relation>.
+
+=cut
+
+#_}
+
+  my $self           = shift;
+  my $primitive_type = shift;
+
+  croak "Unsupported primitive type $primitive_type" unless grep { $_ eq $primitive_type} qw(rel nod way);
+
+  my $sth = $self->{dbh}->prepare("select val as name from tag where ${primitive_type}_id = ? and key = ?") or croak;
 
   return $sth;
 

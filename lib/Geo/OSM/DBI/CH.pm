@@ -184,21 +184,45 @@ sub municipalities_ch { #_{
   return %ret;
 
 } #_}
+sub rel_id_ch { #_{
+#_{ POD
+
+=head2 rel_id_ch
+
+    Return the relation id of Switzerland.
+
+    As of 2017-09-05, it returns C<51701>.
+
+    Note: apparently, a country can have multiple relations with
+    C<< key = 'ISO3166-1' >> (See L<< Geo::OSM::DBI/rel_ids_ISO_3166_1 >>), yet
+    Switzerland has (as it does not have access to the sea) only one.
+
+=cut
 
 #_}
-#_{ POD: Copyright
 
-=head1 Copyright
+  my $self = shift;
+  my ($rel_id_ch) =  $self->rel_ids_ISO_3166_1('CH');
+  return $rel_id_ch;
+
+} #_}
+#_}
+#_{ POD: Copyright and license
+
+=head1 COPYRIGHT and LICENSE
+
 Copyright © 2017 René Nyffenegger, Switzerland. All rights reserved.
+
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a
 copy of the full license at: L<http://www.perlfoundation.org/artistic_license_2_0>
+
 =cut
 
 #_}
 #_{ POD: Source Code
 
-=head1 Source Code
+=head1 SOURCE CODE
 
 The source code is on L<< github|https://github.com/ReneNyffenegger/perl-Geo-OSM-DBI >>. Meaningful pull requests are welcome.
 

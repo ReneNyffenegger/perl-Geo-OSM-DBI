@@ -2,10 +2,8 @@
 use strict;
 use warnings;
 
-use Test::Simple tests => 1;
+use Test::Simple tests => 2;
 use Test::More;
 
-#use Geo::OSM::DBI;
 use_ok('Geo::OSM::DBI');
-
-#ok(1, 'Module could be loaded');
+use_ok('Geo::OSM::DBI::Primitive::Relation');

@@ -16,8 +16,9 @@ use DBI;
 use Time::HiRes qw(time);
 
 use utf8;
-
 use Carp;
+
+use Geo::OSM::DBI::Primitive::Relation;
 
 #_}
 our $VERSION = 0.01;
@@ -489,15 +490,87 @@ Internal function. executes C<$sql_text>. Prints time it took to complete
   printf("SQL: $desc, took %6.3f seconds\n", $t1-$t0);
 
 } #_}
+sub _sth_prepare_name { #_{
+#_{ POD
+
+=head2 _sth_prepare_name
+
+    my sth = $osm_dbi->_sth_prepare_name($primitive_type); 
+
+Prepares the statement handle to get the name for a primitive. C<$primitive_type> must be C<node>, C<way> or C<relation>.
+
+=cut
 
 #_}
-#_{ POD: Copyright
 
-=head1 Copyright
+  my $self           = shift;
+  my $primitive_type = shift;
+
+  croak "Unsupported primitive type $primitive_type" unless grep { $_ eq $primitive_type} qw(rel nod way);
+
+  my $sth = $self->{dbh}->prepare("select val as name from tag where ${primitive_type}_id = ? and key = 'name'") or croak;
+
+  return $sth;
+
+} #_}
+sub rel_ids_ISO_3166_1 { #_{
+
+#_{ POD
+
+=head2 rel_ids_ISO_3166_1
+
+    my $two_letter_country_code = 'DE';
+    my @rel_ids = $self->rel_ids_ISO_3166_1($two_letter_country_code);
+
+Returns the L<< relation|Geo::OSM::Primitive::Relation >> ids for a country.
+Apparently, a country can have multiple relation ids. For example, Germany has three (as 2017-09-05).
+These relations somehow distinguish between land mass and land mass plus sea territories.
+
+=cut
+
+#_}
+
+  my $self                    = shift;
+  my $two_letter_country_code = shift or croak 'Need a two letter country code';
+
+  my $sth = $self->{dbh}->prepare("select rel_id from tag where key = 'ISO3166-1' and val = ? and rel_id is not null") or croak;
+  $sth->execute($two_letter_country_code) or croak;
+
+  my @ret;
+
+  while (my ($rel_id) = $sth->fetchrow_array) {
+     push @ret, Geo::OSM::DBI::Primitive::Relation->new($rel_id, $self);
+  }
+
+  return @ret;
+
+} #_}
+#_}
+#_{ POD: Testing
+
+=head1 TESTING
+
+The package unfortunately only comes with some basic tests.
+
+The modules can be tested however by loading the Swiss dataset
+from L<< geofabrik.cde|http://download.geofabrik.de/europe.html >> with
+L<< load-country.pl|https://github.com/ReneNyffenegger/OpenStreetMap/blob/master/scripts/load-country.pl >> and then
+running the script
+L<< do-Switzerland.pl|https://github.com/ReneNyffenegger/OpenStreetMap/blob/master/scripts/do-Switzerland >>.
+
+=cut
+
+#_}
+#_{ POD: Copyright and License
+
+=head1 COPYRIGHT and LICENSE
+
 Copyright © 2017 René Nyffenegger, Switzerland. All rights reserved.
+
 This program is free software; you can redistribute it and/or modify it
 under the terms of the the Artistic License (2.0). You may obtain a
 copy of the full license at: L<http://www.perlfoundation.org/artistic_license_2_0>
+
 =cut
 
 #_}

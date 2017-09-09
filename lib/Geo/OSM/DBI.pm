@@ -490,6 +490,33 @@ Internal function. executes C<$sql_text>. Prints time it took to complete
   printf("SQL: $desc, took %6.3f seconds\n", $t1-$t0);
 
 } #_}
+sub _sth_prepare_ways_of_relation { #_{
+#_{ POD
+
+=head2 _sth_prepare_name
+
+    my $primitive_type = 'rel'; # or 'way'. or 'node';
+
+    my sth = $osm_dbi->_sth_prepare_name(); 
+
+    $sth->execute($primitive_id);
+
+Prepares the statement handle to get the name for a primitive. C<$primitive_type> must be C<node>, C<way> or C<relation>.
+
+=cut
+
+#_}
+
+  my $self           = shift;
+  my $primitive_type = shift;
+
+  croak "Unsupported primitive type $primitive_type" unless grep { $_ eq $primitive_type} qw(rel nod way);
+
+  my $sth = $self->{dbh}->prepare("select val as name from tag where ${primitive_type}_id = ? and key = 'name'") or croak;
+
+  return $sth;
+
+} #_}
 sub _sth_prepare_name { #_{
 #_{ POD
 
@@ -578,6 +605,31 @@ These relations somehow distinguish between land mass and land mass plus sea ter
   return @ret;
 
 } #_}
+sub rels_ISO_3166_1 {
+#_{ POD
+
+=head2 rels_ISO_3166_1
+
+    my $two_letter_country_code = 'DE';
+    my @rels = $self->rels_ISO_3166_1($two_letter_country_code);
+
+Returns the L<< relations|Geo::OSM::Primitive::Relation >> for a country.
+See L</rels_ISO_3166_1> for more details.
+
+=cut
+
+#_}
+
+  my $self                    = shift;
+  my $two_letter_country_code = shift or croak 'Need a two letter country code';
+
+  my @rel_ids_ISO_3166_1 = $self->rel_ids_ISO_3166_1($two_letter_country_code);
+
+  my @ret;
+  for my $rel_id (@rel_ids_ISO_3166_1) {
+    push @ret, Geo::OSM::DBI::Primitive::Relation->new($rel_id, $self);
+  }
+}
 #_}
 #_{ POD: Testing
 

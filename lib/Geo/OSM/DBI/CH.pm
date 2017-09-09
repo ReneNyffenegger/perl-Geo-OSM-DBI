@@ -189,13 +189,15 @@ sub rel_id_ch { #_{
 
 =head2 rel_id_ch
 
-    Return the relation id of Switzerland.
+    my $rel_id = $osm_db_ch->rel_id_ch();
 
-    As of 2017-09-05, it returns C<51701>.
+Return the relation id of Switzerland.
 
-    Note: apparently, a country can have multiple relations with
-    C<< key = 'ISO3166-1' >> (See L<< Geo::OSM::DBI/rel_ids_ISO_3166_1 >>), yet
-    Switzerland has (as it does not have access to the sea) only one.
+As of 2017-09-05, it returns C<51701>.
+
+Note: apparently, a country can have multiple relations with
+C<< key = 'ISO3166-1' >> (See L<< Geo::OSM::DBI/rel_ids_ISO_3166_1 >>), yet
+Switzerland has (as it does not have access to the sea) only one.
 
 =cut
 
@@ -204,6 +206,27 @@ sub rel_id_ch { #_{
   my $self = shift;
   my ($rel_id_ch) =  $self->rel_ids_ISO_3166_1('CH');
   return $rel_id_ch;
+
+} #_}
+sub rel_ch { #_{
+#_{ POD
+
+=head2 rel_id_ch
+
+Return the L<relation|Geo::OSM::DBI::Primitive::Relation> of Switzerland.
+
+See L
+
+
+=cut
+
+#_}
+
+  my $self = shift;
+
+  my $rel_id_ch =  $self->rel_id_ch;
+
+  return Geo::OSM::DBI::Primitive::Relation->new($rel_id_ch, $self);
 
 } #_}
 #_}

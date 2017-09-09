@@ -16,7 +16,9 @@ use utf8;
 use Carp;
 
 use Geo::OSM::Primitive::Relation;
-our @ISA=qw(Geo::OSM::Primitive::Relation);
+use Geo::OSM::DBI::Primitive::Node;
+# use Geo::OSM::DBI::Primitive::Way;
+our @ISA=qw(Geo::OSM::Primitive::Relation Geo::OSM::DBI::Primitive);
 
 #_}
 our $VERSION = 0.01;
@@ -62,7 +64,7 @@ sub new { #_{
   my $self = $class->SUPER::new($id);
 
   croak "not a Geo::OSM::DBI::Primitive::Relation" unless $self -> isa('Geo::OSM::DBI::Primitive::Relation');
-  croak "Need Geo::OSM::DBI" unless $osm_dbi->isa('Geo::OSM::DBI');
+  croak "Need Geo::OSM::DBI" unless ref $osm_dbi and $osm_dbi->isa('Geo::OSM::DBI');
 
   $self->{osm_dbi} = $osm_dbi;
 
@@ -116,6 +118,61 @@ Returns the name of the object in the language C<$lang>.
 
   return $name;
 
+} #_}
+sub members { #_{
+#_{ POD
+
+=head2 members
+
+    my @members = $rel->members();
+
+Return the members of the relation. The returned elements are hashes with
+the keys C<rol> (role of the member) and C<mem> (the member itself,
+a L<node|Geo::OSM::DBI::Primitive::Node>, L<way|Geo::OSM::DBI::Primitive::Way> or
+a L<relation|Geo::OSM::DBI::Primitive::Relation>.
+
+     my $elem = shift @members;
+     my $primitive = $elem->{mem};
+     my $role      = $elem->{rol};
+
+=cut
+
+#_}
+
+  my $self = shift;
+
+  my $sth = $self->{osm_dbi}->{dbh}->prepare( #_{
+"   select
+      rm.nod_id,
+      rm.way_id,
+      rm.rel_id,
+      rm.rol
+    from
+      rel_mem rm
+    where
+      rm.rel_of = ?
+    order by
+      order_
+") or croak; #_}
+
+  $sth->execute($self->{id});
+  my @ret;
+  while (my $r = $sth->fetchrow_hashref) { #_{
+
+    my $elem = {rol=>$r->{rol}};
+
+    if     (defined $r->{nod_id}) { $elem->{mem} = Geo::OSM::DBI::Primitive::Node    ->new($r->{nod_id}, $self->{osm_dbi}) }
+#   elsif  (defined $r->{way_id}) { $elem->{mem} = Geo::OSM::DBI::Primitive::Way     ->new($r->{way_id}, $self->{osm_dbi}) }
+    elsif  (defined $r->{rel_id}) { $elem->{mem} = Geo::OSM::DBI::Primitive::Relation->new($r->{rel_id}, $self->{osm_dbi}) }
+    else   {die "Neither nod_id, nor way_id, nor rel_id defined"};
+
+    $elem->_set_cache_role($self, $r->{rol});
+
+    push @ret, $elem;
+
+  } #_}
+
+  return @ret;
 } #_}
 #_}
 #_{ POD: Copyright and license

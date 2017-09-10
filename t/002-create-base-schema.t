@@ -7,7 +7,7 @@
 use strict;
 use warnings;
 
-use Test::Simple tests => 4;
+use Test::Simple tests => 3;
 use Test::More;
 use DBI;
 
@@ -49,4 +49,3 @@ t::helper::exec_sql_stmts_in_file($osm_db->{dbh}, 't/002-fill-base-schema.sql');
 $osm_db->create_base_schema_indexes();
 
 $dbh->commit;
-ok(1);

@@ -19,7 +19,7 @@ use Carp;
 use Geo::OSM::Primitive::Relation;
 use Geo::OSM::DBI::Primitive;
 use Geo::OSM::DBI::Primitive::Node;
-# use Geo::OSM::DBI::Primitive::Way;
+use Geo::OSM::DBI::Primitive::Way;
 our @ISA=qw(Geo::OSM::Primitive::Relation Geo::OSM::DBI::Primitive);
 
 #_}
@@ -113,11 +113,12 @@ a L<relation|Geo::OSM::DBI::Primitive::Relation>.
   my @ret;
   while (my $r = $sth->fetchrow_hashref) { #_{
 
-    my $elem = {rol=>$r->{rol}};
+    my $elem;
+#   my $elem = {rol=>$r->{rol}};
 
-    if     (defined $r->{nod_id}) { $elem->{mem} = Geo::OSM::DBI::Primitive::Node    ->new($r->{nod_id}, $self->{osm_dbi}) }
-#   elsif  (defined $r->{way_id}) { $elem->{mem} = Geo::OSM::DBI::Primitive::Way     ->new($r->{way_id}, $self->{osm_dbi}) }
-    elsif  (defined $r->{rel_id}) { $elem->{mem} = Geo::OSM::DBI::Primitive::Relation->new($r->{rel_id}, $self->{osm_dbi}) }
+    if     (defined $r->{nod_id}) { $elem = Geo::OSM::DBI::Primitive::Node    ->new($r->{nod_id}, $self->{osm_dbi}) }
+    elsif  (defined $r->{way_id}) { $elem = Geo::OSM::DBI::Primitive::Way     ->new($r->{way_id}, $self->{osm_dbi}) }
+    elsif  (defined $r->{rel_id}) { $elem = Geo::OSM::DBI::Primitive::Relation->new($r->{rel_id}, $self->{osm_dbi}) }
     else   {die "Neither nod_id, nor way_id, nor rel_id defined"};
 
     $elem->_set_cache_role($self, $r->{rol});

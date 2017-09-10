@@ -241,6 +241,9 @@ Creates the table C<municipalites>.
     "create table municipalities"
   );
 
+  $self->_sql_stmt("commit", "commit");
+
+
   $self -> _sql_stmt("
     insert into municipalities
     select
@@ -278,24 +281,12 @@ Creates the table C<municipalites>.
       cnt_nodes_verification,
       name
   ", "fill table municipalities");
-
-#   $self -> _sql_stmt("
-#     create table municipalities as
-#     select
-#       muni.rel_id rel_id,
-#       name.val    name,
-#       borw.id
-#     from
-#       tag     muni                                   join
-#       tag     name on muni.rel_id = name.rel_id      join
-#       rel_mem borr on muni.rel_id = borr.rel_of      join
-#       way     borw on borr.way_id = borw.id
-#     where
-#       muni.key = 'admin_level' and
-#       name.key = 'name'        and
-#       muni.val =  8
-#    ",
-#    'create table municipalites');
+#q
+#q  $sth->execute or croak;
+#q
+#Qwhile (my @r = $sth->fetchrow_array) {
+#Q  printf "%2d %2d %2d %s\n", $r[0], $r[1], $r[2], $r[3];
+#Q}
 
 } #_}
 sub create_area_tables { #_{

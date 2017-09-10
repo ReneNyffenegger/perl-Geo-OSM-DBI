@@ -6,7 +6,7 @@ use Geo::OSM::DBI;
 # use Geo::OSM::DBI::Primitive::Way;
 use Geo::OSM::DBI::Primitive::Relation;
 
-use Test::Simple tests => 4;
+use Test::Simple tests => 7;
 use Test::More;
 
 my $db_test = 'test.db';
@@ -19,7 +19,22 @@ $dbh->{AutoCommit} = 0;
 my $osm_db = Geo::OSM::DBI->new($dbh);
 my $rel    = Geo::OSM::DBI::Primitive::Relation->new(1, $osm_db);
 
+ok(1); # Test also class hierarchy Node and Way
+
+# isa_ok($nod, 'Geo::OSM::DBI::Primitive::Node');
+# isa_ok($nod, 'Geo::OSM::DBI::Primitive');
+# isa_ok($nod, 'Geo::OSM::Primitive::Node');
+# isa_ok($nod, 'Geo::OSM::Primitive');
+# 
+# isa_ok($way, 'Geo::OSM::DBI::Primitive::Way');
+# isa_ok($way, 'Geo::OSM::DBI::Primitive');
+# isa_ok($way, 'Geo::OSM::Primitive::Way');
+# isa_ok($way, 'Geo::OSM::Primitive');
+
 isa_ok($rel, 'Geo::OSM::DBI::Primitive::Relation');
 isa_ok($rel, 'Geo::OSM::DBI::Primitive');
 isa_ok($rel, 'Geo::OSM::Primitive::Relation');
 isa_ok($rel, 'Geo::OSM::Primitive');
+
+is($rel->{id}, 1, 'rel->id == 1');
+is($rel->primitive_type(), 'rel', 'rel->primitive_type == rel');

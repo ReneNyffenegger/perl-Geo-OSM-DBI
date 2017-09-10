@@ -3,7 +3,7 @@
 =encoding utf8
 =head1 NAME
 
-Geo::OSM::DBI::Primitive::Relation - Derivation of L<< Geo::OSM::Primitive::Relation >> to be used with L<< Geo::OSM::DBI >>.
+Geo::OSM::DBI::Primitive::Relation - Derivation of L<< Geo::OSM::Primitive::Relation >> and L<<Geo::OSM::DBI::Primitive >>, to be used with L<< Geo::OSM::DBI >>.
 
 =cut
 package Geo::OSM::DBI::Primitive::Relation;
@@ -15,7 +15,9 @@ use strict;
 use utf8;
 use Carp;
 
+# use Geo::OSM::Primitive;
 use Geo::OSM::Primitive::Relation;
+use Geo::OSM::DBI::Primitive;
 use Geo::OSM::DBI::Primitive::Node;
 # use Geo::OSM::DBI::Primitive::Way;
 our @ISA=qw(Geo::OSM::Primitive::Relation Geo::OSM::DBI::Primitive);
@@ -64,59 +66,11 @@ sub new { #_{
   my $self = $class->SUPER::new($id);
 
   croak "not a Geo::OSM::DBI::Primitive::Relation" unless $self -> isa('Geo::OSM::DBI::Primitive::Relation');
-  croak "Need Geo::OSM::DBI" unless ref $osm_dbi and $osm_dbi->isa('Geo::OSM::DBI');
+# croak "not a Geo::OSM::DBI::Primitive"           unless $self -> isa('Geo::OSM::DBI::Primitive');
 
-  $self->{osm_dbi} = $osm_dbi;
+  $self->_init_geo_osm_dbi_primitive($osm_dbi);
 
   return $self;
-
-} #_}
-sub name { #_{
-#_{ POD
-
-=head2 name
-
-    my $name = $rel->name();
-
-Returns the name of the object;
-
-=cut
-
-#_}
-
-  my $self  = shift;
-
-  my $sth = $self->{osm_dbi}->_sth_prepare_name('rel');
-  $sth->execute($self->{id}) or die;
-
-  my ($name) = $sth->fetchrow_array;
-
-  return $name;
-
-} #_}
-sub name_in_lang { #_{
-#_{ POD
-
-=head2 name_in_lang
-
-    my $lang = 'de'; # or 'en' or 'fr' or 'it' or …
-    my $name = $rel->name_in_lang($lang);
-
-Returns the name of the object in the language C<$lang>.
-
-=cut
-
-#_}
-
-  my $self = shift;
-  my $lang = shift;
-
-  my $sth = $self->{osm_dbi}->_sth_prepare_name_in_lang('rel');
-  $sth->execute($self->{id}, "name:$lang") or die;
-
-  my ($name) = $sth->fetchrow_array;
-
-  return $name;
 
 } #_}
 sub members { #_{

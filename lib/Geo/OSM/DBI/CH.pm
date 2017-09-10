@@ -215,7 +215,7 @@ sub rel_ch { #_{
 
 Return the L<relation|Geo::OSM::DBI::Primitive::Relation> of Switzerland.
 
-See L
+See L<Geo::OSM::DBI/rel_id_ch> for more details.
 
 
 =cut
@@ -224,7 +224,7 @@ See L
 
   my $self = shift;
 
-  my $rel_id_ch =  $self->rel_id_ch;
+  my $rel_id_ch = $self->rel_id_ch;
 
   return Geo::OSM::DBI::Primitive::Relation->new($rel_id_ch, $self);
 

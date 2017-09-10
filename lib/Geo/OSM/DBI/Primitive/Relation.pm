@@ -66,7 +66,6 @@ sub new { #_{
   my $self = $class->SUPER::new($id);
 
   croak "not a Geo::OSM::DBI::Primitive::Relation" unless $self -> isa('Geo::OSM::DBI::Primitive::Relation');
-# croak "not a Geo::OSM::DBI::Primitive"           unless $self -> isa('Geo::OSM::DBI::Primitive');
 
   $self->_init_geo_osm_dbi_primitive($osm_dbi);
 

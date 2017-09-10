@@ -599,7 +599,8 @@ These relations somehow distinguish between land mass and land mass plus sea ter
   my @ret;
 
   while (my ($rel_id) = $sth->fetchrow_array) {
-     push @ret, Geo::OSM::DBI::Primitive::Relation->new($rel_id, $self);
+     push @ret, $rel_id;
+#    Geo::OSM::DBI::Primitive::Relation->new($rel_id, $self);
   }
 
   return @ret;
@@ -629,6 +630,8 @@ See L</rels_ISO_3166_1> for more details.
   for my $rel_id (@rel_ids_ISO_3166_1) {
     push @ret, Geo::OSM::DBI::Primitive::Relation->new($rel_id, $self);
   }
+  return @ret;
+
 }
 #_}
 #_{ POD: Testing

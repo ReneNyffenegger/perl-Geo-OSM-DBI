@@ -205,8 +205,8 @@ After creating the base schema and filling the tables, the indexes should be cre
 # $self->{dbh}->do("create index ${schema_dot}rel_mem_ix_nod_id on rel_mem (nod_id)"   );
   $self->_sql_stmt("create index ${schema_dot}rel_mem_ix_rel_of on rel_mem (rel_of)"   , "index ${schema_dot}rel_mem_ix_rel_of");
 
-# 2017-09-05
-  $self->_sql_stmt('analyze', 'analyze');
+# 2017-09-11
+  $self->_sql_stmt("analyze $schema", 'analyze');
 
 #_}
 } #_}

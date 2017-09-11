@@ -49,7 +49,7 @@ sub new { #_{
 
     my $osm_dbi = Geo::OSM::DBI->new(…);
 
-    new($osm_way_id, $osm_dbi);
+    new($osm_way_id, $osm_dbi, $lat, $lon);
 
 =cut
 
@@ -58,8 +58,10 @@ sub new { #_{
   my $class   = shift;
   my $id      = shift;
   my $osm_dbi = shift;
+  my $lat     = shift;
+  my $lon     = shift;
 
-  my $self = $class->SUPER::new($id);
+  my $self = $class->SUPER::new($id, $lat, $lon);
 
   croak "not a Geo::OSM::DBI::Primitive::Node" unless $self -> isa('Geo::OSM::DBI::Primitive::Node');
 
@@ -68,7 +70,6 @@ sub new { #_{
   return $self;
 
 } #_}
-
 #_}
 #_{ POD: Copyright and license
 

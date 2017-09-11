@@ -68,6 +68,45 @@ sub new { #_{
   return $self;
 
 } #_}
+sub nodes { #_{
+#_{ POD
+
+=head2 nodes
+
+    my @nodes = $way -> nodes();
+
+Returns the nodes that the way conisist of.
+
+=cut
+
+#_}
+
+  my $self = shift;
+
+  my $sth = $self->{osm_dbi}->{dbh}->prepare( #_{
+"   select
+      nd.id,
+      nd.lat,
+      nd.lon
+    from
+      nod_way    nw                       join
+      nod        nd on nw.nod_id = nd.id
+    where
+      nw.way_id = ?
+    order by
+      order_
+") or croak; #_}
+  $sth->execute($self->{id});
+  my @ret;
+  while (my $r = $sth->fetchrow_hashref) { #_{
+    my $node = Geo::OSM::DBI::Primitive::Node->new($r->{id}, $self->{osm_dbi}, $r->{lat}, $r->{lon});
+
+    push @ret, $node;
+  } #_}
+
+  return @ret;
+
+} #_}
 
 #_}
 #_{ POD: Copyright and license

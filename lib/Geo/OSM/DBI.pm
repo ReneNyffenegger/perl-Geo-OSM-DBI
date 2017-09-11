@@ -112,15 +112,7 @@ After filling the tables, the indexes on the tables should be created with L</cr
   my $opts = shift;
 
   my ($schema, $schema_dot) = _schema_dot_from_opts($opts);
-#  my $schema = delete $opts->{schema};
-#  if ($schema) {
-#    $schema = "$schema.";
-#  }
-#  else {
-#    $schema = "";
-#  }
 
-# $self->{dbh}->do("
   $self->_sql_stmt("
     create table ${schema_dot}nod (
           id  integer primary key,
@@ -130,8 +122,6 @@ After filling the tables, the indexes on the tables should be created with L</cr
     "create table ${schema_dot}nod"
   );
 
-
-# $self->{dbh}->do("
   $self->_sql_stmt("
         create table ${schema_dot}nod_way (
           way_id         integer not null,
@@ -140,7 +130,6 @@ After filling the tables, the indexes on the tables should be created with L</cr
     )",
   "create table ${schema_dot}nod_way");
 
-# $self->{dbh}->do("
   $self->_sql_stmt("
         create table ${schema_dot}rel_mem (
           rel_of         integer not null,

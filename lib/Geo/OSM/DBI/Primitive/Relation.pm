@@ -79,7 +79,7 @@ sub members { #_{
 
     my @members = $rel->members();
 
-Return the members of the relation. The returned elements are hashes with
+Returns the members of the relation. The returned elements are hashes with
 the keys C<rol> (role of the member) and C<mem> (the member itself,
 a L<node|Geo::OSM::DBI::Primitive::Node>, L<way|Geo::OSM::DBI::Primitive::Way> or
 a L<relation|Geo::OSM::DBI::Primitive::Relation>.
@@ -113,7 +113,6 @@ a L<relation|Geo::OSM::DBI::Primitive::Relation>.
   while (my $r = $sth->fetchrow_hashref) { #_{
 
     my $elem;
-#   my $elem = {rol=>$r->{rol}};
 
     if     (defined $r->{nod_id}) { $elem = Geo::OSM::DBI::Primitive::Node    ->new($r->{nod_id}, $self->{osm_dbi}) }
     elsif  (defined $r->{way_id}) { $elem = Geo::OSM::DBI::Primitive::Way     ->new($r->{way_id}, $self->{osm_dbi}) }

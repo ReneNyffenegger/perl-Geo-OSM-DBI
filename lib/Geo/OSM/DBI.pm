@@ -21,7 +21,7 @@ use Carp;
 use Geo::OSM::DBI::Primitive::Relation;
 
 #_}
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 #_{ Synopsis
 
 =head1 SYNOPSIS
@@ -586,7 +586,7 @@ These relations somehow distinguish between land mass and land mass plus sea ter
   return @ret;
 
 } #_}
-sub rels_ISO_3166_1 {
+sub rels_ISO_3166_1 { #_{
 #_{ POD
 
 =head2 rels_ISO_3166_1
@@ -612,7 +612,7 @@ See L</rels_ISO_3166_1> for more details.
   }
   return @ret;
 
-}
+} #_}
 #_}
 #_{ POD: Testing
 
@@ -644,7 +644,7 @@ copy of the full license at: L<http://www.perlfoundation.org/artistic_license_2_
 #_}
 #_{ POD: Source Code
 
-=head1 Source Code
+=head1 SOURCE CODE
 
 The source code is on L<< github|https://github.com/ReneNyffenegger/perl-Geo-OSM-DBI >>. Meaningful pull requests are welcome.
 

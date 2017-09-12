@@ -23,7 +23,7 @@ use Geo::OSM::DBI::Primitive::Way;
 our @ISA=qw(Geo::OSM::Primitive::Relation Geo::OSM::DBI::Primitive);
 
 #_}
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 #_{ Synopsis
 
 =head1 SYNOPSIS

@@ -23,7 +23,7 @@ use Geo::OSM::DBI;
 our @ISA = qw(Geo::OSM::DBI);
 
 #_}
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 #_{ Synopsis
 
 =head1 SYNOPSIS

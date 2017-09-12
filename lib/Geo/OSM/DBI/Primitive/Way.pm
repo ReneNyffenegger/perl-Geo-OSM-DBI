@@ -19,7 +19,7 @@ use Geo::OSM::Primitive::Way;
 our @ISA=qw(Geo::OSM::Primitive::Way Geo::OSM::DBI::Primitive);
 
 #_}
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 #_{ Synopsis
 
 =head1 SYNOPSIS

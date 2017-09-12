@@ -19,7 +19,7 @@ use Geo::OSM::Primitive;
 our @ISA=qw(Geo::OSM::Primitive);
 
 #_}
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 #_{ Synopsis
 
 =head1 SYNOPSIS
@@ -129,6 +129,28 @@ Returns the name of the object in the language C<$lang>.
 #q   return $self;
 #q 
 #q } #_}
+#_}
+#_{ POD: Copyright and license
+
+=head1 COPYRIGHT and LICENSE
+
+Copyright © 2017 René Nyffenegger, Switzerland. All rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at: L<http://www.perlfoundation.org/artistic_license_2_0>
+
+=cut
+
+#_}
+#_{ POD: Source Code
+
+=head1 SOURCE CODE
+
+The source code is on L<< github|https://github.com/ReneNyffenegger/perl-Geo-OSM-DBI >>. Meaningful pull requests are welcome.
+
+=cut
+
 #_}
 
 'tq84';

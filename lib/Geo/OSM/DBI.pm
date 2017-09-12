@@ -430,6 +430,9 @@ sub ways { #_{
 
 Returns a list of I<all> ways found in the database.
 
+This method should probably be used in conjunction with
+L<< area tables|/create_area_tables >>.
+
 =cut
 
 #_}

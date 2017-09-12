@@ -77,6 +77,8 @@ sub nodes { #_{
 
 Returns the nodes that the way conisist of.
 
+B<TODO> Should this method consider the nodes in the cache (L<Geo::OSM::DBI::Primitive::Node/_set_cache_nodes>)
+
 =cut
 
 #_}

@@ -4,3 +4,5 @@
 Geo-OSM-DBI-.*\.tar\.gz
 test.db
 blib
+MANIFEST\.SKIP$
+Queries

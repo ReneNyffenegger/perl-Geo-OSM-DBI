@@ -5,9 +5,9 @@ use Geo::OSM::DBI;
 use Geo::OSM::DBI::Primitive::Relation;
 
 use Test::More tests => 19;
-# use Test::More;
 
 my $db_test = 'test.db';
+die unless -f $db_test;
 my $dbh = DBI->connect("dbi:SQLite:dbname=$db_test") or die "Could not create $db_test";
 $dbh->{AutoCommit} = 0;
 

@@ -420,6 +420,32 @@ sub create_area_tables { #_{
   $self->create_base_schema_indexes({schema=>$schema_name_to});
 
 } #_}
+sub ways { #_{
+
+#_{ POD
+
+=head2 ways
+
+    my @ways = $osm_db->ways();
+
+Returns a list of I<all> ways found in the database.
+
+=cut
+
+#_}
+
+  my $self = shift;
+
+  my $sth = $self->{dbh}->prepare("select distinct(way_id) way_id from nod_way") or die;
+  $sth->execute;
+
+  my @ret;
+  while (my $r = $sth->fetchrow_hashref) {
+    push @ret, Geo::OSM::DBI::Primitive::Way->new($r->{way_id}, $self);
+  }
+  return @ret;
+
+} #_}
 sub _schema_dot_from_opts { #_{
 #_{ POD
 

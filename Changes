@@ -4,3 +4,10 @@
 
  0.02  2017-09-12
 
+       Geo::OSM::DBI
+         + ways()
+
+       Geo::OSM::DBI::CH
+         + municipalities_ch()
+
+

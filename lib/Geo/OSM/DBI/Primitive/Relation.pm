@@ -53,7 +53,7 @@ sub new { #_{
 
     my $osm_dbi = Geo::OSM::DBI->new(…);
 
-    new($osm_relation_id, $osm_dbi);
+    my $rel = Geo::OSM::DBI::Primitive::Relation->new($osm_relation_id, $osm_dbi);
 
 =cut
 

@@ -136,23 +136,9 @@ Finanlly, it creates the view C<municipalities_ch_v>.
 #   return @ret;
 
 } #_}
-sub municipalities_ch { #_{
-#_{ POD
+sub _select_stmt_municipality_ch_v { #_{
 
-=head2 municipalities_ch
-
-    $osm_db_ch->create_table_municipalities_ch();
-    …
-    my %municipalities = $osm_db_ch->municipalities_ch();
-
-
-=cut
-
-#_}
-  
-  my $self = shift;
-  
-  my $stmt = "
+  return "
     select
       rel_id,
       name,
@@ -164,6 +150,25 @@ sub municipalities_ch { #_{
     from
       municipalities_ch_v
   ";
+
+
+} #_}
+sub municipalities_ch { #_{
+#_{ POD
+
+=head2 municipalities_ch
+
+    $osm_db_ch->create_table_municipalities_ch();
+    …
+    my %municipalities = $osm_db_ch->municipalities_ch();
+
+=cut
+
+#_}
+  
+  my $self = shift;
+  
+  my $stmt = _select_stmt_municipality_ch_v();
 
 
   my $sth = $self->{dbh}->prepare($stmt);
@@ -182,6 +187,53 @@ sub municipalities_ch { #_{
   }
 
   return %ret;
+
+} #_}
+sub municipality_ch { #_{
+#_{ POD
+
+=head2 municipality_ch
+
+    $osm_db_ch->create_table_municipalities_ch();
+    …
+    my $muni_rel = $osm_db_ch->municipality_ch(bfs_no=>$bfs_no);
+    #  $municipality = $osm_db_ch->municipality_ch(rel_id=>$rel_id); // TODO
+
+
+The method returnes the L<< relation|Geo::OSM::DBI::Primitive::Relation>> for
+the municipality wanted by C<< $bfs_no >>
+
+
+=cut
+
+#_}
+
+  my $self = shift;
+  my %opts = @_;
+
+
+  my $stmt = _select_stmt_municipality_ch_v() . " where ";
+
+  my $val_criterion;
+  if (defined ($val_criterion = delete $opts{bfs_no})) {
+    $stmt .= "bfs_no = ?"; 
+  }
+  else {
+    croak "No bfs number given";
+  }
+
+  my $sth = $self->{dbh}->prepare($stmt);
+  $sth->execute($val_criterion);
+  my $r = $sth->fetchrow_hashref;
+
+  my $muni_rel = Geo::OSM::DBI::Primitive::Relation->new($r->{rel_id}, $self);
+
+  $muni_rel->{cache}->{todo}->{lat_min} = $r->{lat_min};
+  $muni_rel->{cache}->{todo}->{lat_max} = $r->{lat_max};
+  $muni_rel->{cache}->{todo}->{lon_min} = $r->{lon_min};
+  $muni_rel->{cache}->{todo}->{lon_max} = $r->{lon_max};
+  
+  return $muni_rel;
 
 } #_}
 sub rel_id_ch { #_{

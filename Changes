@@ -12,4 +12,7 @@
 
        Improve POD
 
+       Makefile.PL 
+         Fix missing modules (PREREQ_PM)
+
 

@@ -17,7 +17,11 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => 0,
     },
     PREREQ_PM => {
-      'DBI'         => 0,
+      'DBI'                            => 0,
+      'Geo::OSM::Primitive'            => 0.01,
+      'Geo::OSM::Primitive::Node'      => 0.01,
+      'Geo::OSM::Primitive::Way'       => 0.01,
+      'Geo::OSM::Primitive::Relation'  => 0.01,
 #     'DBD::SQLite' => 0
     },
     BUILD_REQUIRES => {

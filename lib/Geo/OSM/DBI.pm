@@ -3,7 +3,7 @@
 =encoding utf8
 =head1 NAME
 
-Geo::OSM::DBI - Store Open Street Map data with DBI.
+Geo::OSM::DBI - Store Open Street Map (OSM) data with L<<DBI>>.
 
 =cut
 package Geo::OSM::DBI;
@@ -47,10 +47,10 @@ our $VERSION = 0.02;
 
 =head1 OVERVIEW
 
-Manage <I>OpenStreetMap</I> data in a L<DBI> database.
+Manage I<OpenStreetMap> data in a L<DBI> database.
 
-Originally, the package was thought to be database product agnostic (does the I<I> in C<DBI> not stand for independent?). It turned out, that I was
-happy if I could make it work with L<DBD::SQLite>, so to call it DB-independent is not correct.
+Originally, the package was thought to be database product agnostic (does the I<< I >> in C<DBI> not stand for independent?). It turned out, that I was
+happy if I could make it work with L<DBD::SQLite>, so to call it DB-independent is currently not correct.
 
 =cut
 
@@ -510,7 +510,8 @@ sub _sth_prepare_ways_of_relation { #_{
 
     $sth->execute($primitive_id);
 
-Prepares the statement handle to get the name for a primitive. C<$primitive_type> must be C<node>, C<way> or C<relation>.
+Prepares the statement handle to get the name for a primitive. C<$primitive_type> must be C<nod>, C<way> or C<rel> (See
+L<< Geo::OSM::Primitive/primitve_type >>).
 
 =cut
 

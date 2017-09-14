@@ -10,4 +10,6 @@
        Geo::OSM::DBI::CH
          + municipalities_ch()
 
+       Improve POD
+
 
